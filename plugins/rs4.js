@@ -46,15 +46,15 @@ const restoreVarDeclarator = {
             }
         
         }
-
+        
         else if (initPath.isIdentifier())
-        {//还原全局变量
+        {
             if (!typeof astglb[init.name] == 'undefined')
             {
                 return;
             }
         }
-
+        
         else if (initPath.isMemberExpression())
         {
             let name = init.object.name;
@@ -77,7 +77,7 @@ const restoreVarDeclarator = {
         {   
             referPath.replaceWith(init);
         }
-
+        
         path.remove();
     },
 
@@ -144,6 +144,37 @@ const restoreVarDeclarator = {
 }
 
 traverse(ast,restoreVarDeclarator);
+
+const replaceArrayElements = {
+    VariableDeclarator(path)
+    {
+        let {node,scope} = path;
+        let {id,init} = node;
+        if (!types.isArrayExpression(init) || init.elements.length == 0) return;
+
+        const binding = scope.getBinding(id.name);
+        if (!binding || !binding.constant) return;
+
+        for (let referPath of binding.referencePaths) {
+			let { node, parent } = referPath;
+			if (!types.isMemberExpression(parent, { object: node }) || !types.isNumericLiteral(parent.property)) {
+				return;
+			};
+		}   
+        
+        for (let referPath of binding.referencePaths)
+        {
+            let {parent,parentPath} = referPath;
+            let index = parent.property.value;
+            parentPath.replaceWith(init.elements[index]);
+        }
+        
+        path.remove()
+    },
+
+}
+
+traverse(ast,replaceArrayElements);
 
 let {code} = generator(ast);
 fs.writeFile('decode.js', code, (err)=>{});

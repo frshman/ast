@@ -36,8 +36,8 @@ const usefulPlugins = require("./tools/usefulPlugins");
 
 
 //js混淆代码读取
-process.argv.length > 2 ? encodeFile = process.argv[2] : encodeFile = "./input/encode.js";
-process.argv.length > 3 ? decodeFile = process.argv[3] : decodeFile = "./output/decodeResult.js";
+process.argv.length > 2 ? encodeFile = process.argv[2] : encodeFile = `${__dirname}/input/encode.js`;
+process.argv.length > 3 ? decodeFile = process.argv[3] : decodeFile = `${__dirname}/output/decodeResult.js`;
 
 //将源代码解析为AST
 let sourceCode = fs.readFileSync(encodeFile, { encoding: "utf-8" });
