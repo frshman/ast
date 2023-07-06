@@ -1,5 +1,7 @@
 const fs = require("fs")
+const path = require('path');
 
+let rootPath = path.resolve(__dirname,'..');
 //把源代码解析成ast
 const {parse} = require("@babel/parser");
 
@@ -12,7 +14,7 @@ const types = require("@babel/types");
 //将处理完毕的AST转换成JavaScript源代码
 const generator = require("@babel/generator").default;
 
-let encode_file = "./encode.js",decode_file = "./decode_result.js";
+let encode_file = `${rootPath}/encode.js`,decode_file = "./decode_result.js";
 
 let jscode = fs.readFileSync(encode_file, {encoding: "utf-8"});
 
