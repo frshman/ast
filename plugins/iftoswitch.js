@@ -10,7 +10,7 @@ function WhilecollectSwitchCase(Path, name) {
             if (!types.isIdentifier(left, { name: name }) || operator != '===' || !types.isNumericLiteral(right)) {//条件过滤
                 return;
             }
-
+                
             let value = right.value;
 
             ifNodes[right.value] = consequent.body;   //保存整个body，记得生成switchCase节点的时候加上break节点。
